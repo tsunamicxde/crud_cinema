@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MovieService {
+public class GenreService {
 
     @Autowired
     private MovieRepository movieRepository;
@@ -53,16 +53,5 @@ public class MovieService {
 
     public List<Genre> getAllGenres() {
         return genreRepository.findAll();
-    }
-
-    public Genre updateGenre(Long id, Genre genreDetails) {
-        Genre genre = genreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Genre not found"));
-        genre.setName(genreDetails.getName());
-        return genreRepository.save(genre);
-    }
-
-    public void deleteGenre(Long id) {
-        genreRepository.deleteById(id);
     }
 }

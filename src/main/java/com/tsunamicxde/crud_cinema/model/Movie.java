@@ -1,9 +1,14 @@
 package com.tsunamicxde.crud_cinema.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "movies")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Movie {
 
     @Id
@@ -13,18 +18,24 @@ public class Movie {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String genre;
+    @ManyToMany
+    @JoinTable(
+            name = "movie_genre",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private Set<Genre> genres = new HashSet<>();
 
     @Column(nullable = false)
     private int year;
 
+    // Конструкторы, геттеры и сеттеры
+
     public Movie() {
     }
 
-    public Movie(String name, String genre, int year) {
+    public Movie(String name, int year) {
         this.name = name;
-        this.genre = genre;
         this.year = year;
     }
 
@@ -44,12 +55,12 @@ public class Movie {
         this.name = name;
     }
 
-    public String getGenre() {
-        return genre;
+    public Set<Genre> getGenres() {
+        return genres;
     }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
+    public void setGenres(Set<Genre> genres) {
+        this.genres = genres;
     }
 
     public int getYear() {
