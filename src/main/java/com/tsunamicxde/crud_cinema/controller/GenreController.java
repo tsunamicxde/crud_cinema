@@ -79,12 +79,12 @@ public class GenreController {
         GenreDTO genreDTO = new GenreDTO();
         genreDTO.setId(genre.getId());
         genreDTO.setName(genre.getName());
+        genreDTO.setDescription(genre.getDescription());
 
         List<Long> movieIds = genre.getMovies().stream()
                 .map(Movie::getId)
                 .collect(Collectors.toList());
         genreDTO.setMovieIds(movieIds);
-
         return genreDTO;
     }
 
@@ -92,6 +92,7 @@ public class GenreController {
         Genre genre = new Genre();
         genre.setId(genreDTO.getId());
         genre.setName(genreDTO.getName());
+        genre.setDescription(genreDTO.getDescription());
         return genre;
     }
 }

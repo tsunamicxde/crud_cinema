@@ -35,6 +35,7 @@ public class GenreService {
     public Genre updateGenre(Long id, Genre genreDetails) {
         Genre genre = genreRepository.findById(id).orElseThrow(() -> new RuntimeException("Genre not found"));
         genre.setName(genreDetails.getName());
+        genre.setDescription(genreDetails.getDescription());
         genre.setMovies(genreDetails.getMovies());
         return genreRepository.save(genre);
     }

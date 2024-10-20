@@ -18,14 +18,18 @@ public class Genre {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = false, unique = true)
+    private String description;
+
     @ManyToMany(mappedBy = "genres")
     private Set<Movie> movies = new HashSet<>();
 
     public Genre() {
     }
 
-    public Genre(String name) {
+    public Genre(String name, String description) {
         this.name = name;
+        this.description = description;
     }
 
     public Long getId() {
@@ -50,5 +54,13 @@ public class Genre {
 
     public void setMovies(Set<Movie> movies) {
         this.movies = movies;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

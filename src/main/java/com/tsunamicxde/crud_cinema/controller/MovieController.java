@@ -99,9 +99,10 @@ public class MovieController {
                     GenreDTO genreDTO = new GenreDTO();
                     genreDTO.setId(genre.getId());
                     genreDTO.setName(genre.getName());
+                    genreDTO.setDescription(genre.getDescription());
 
                     List<Long> movieIds = genre.getMovies().stream()
-                            .map(Movie::getId) // Получаем ID фильмов
+                            .map(Movie::getId)
                             .collect(Collectors.toList());
                     genreDTO.setMovieIds(movieIds);
 
