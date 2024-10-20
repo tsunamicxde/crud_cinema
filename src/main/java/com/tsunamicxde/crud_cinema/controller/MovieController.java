@@ -92,6 +92,8 @@ public class MovieController {
         MovieDTO movieDTO = new MovieDTO();
         movieDTO.setId(movie.getId());
         movieDTO.setName(movie.getName());
+        movieDTO.setDescription(movie.getDescription());
+        movieDTO.setDuration(movie.getDuration());
         movieDTO.setYear(movie.getYear());
 
         List<GenreDTO> genreDTOs = movie.getGenres().stream()
@@ -141,6 +143,8 @@ public class MovieController {
         Movie movie = new Movie();
         movie.setId(movieDTO.getId());
         movie.setName(movieDTO.getName());
+        movie.setDescription(movieDTO.getDescription());
+        movie.setDuration(movieDTO.getDuration());
         movie.setYear(movieDTO.getYear());
 
         if (movieDTO.getGenres() != null) {

@@ -17,6 +17,12 @@ public class Movie {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String description;
+
+    @Column(nullable = false)
+    private int duration;
+
     @ManyToMany
     @JoinTable(
             name = "movie_genre",
@@ -42,8 +48,10 @@ public class Movie {
         this.id = id;
     }
 
-    public Movie(String name, int year) {
+    public Movie(String name, String description, int duration, int year) {
         this.name = name;
+        this.description = description;
+        this.duration = duration;
         this.year = year;
     }
 
@@ -76,6 +84,22 @@ public class Movie {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public Set<Genre> getGenres() {

@@ -6,6 +6,8 @@ import java.util.Set;
 public class MovieDTO {
     private Long id;
     private String name;
+    private String description;
+    private int duration;
     private int year;
     private List<GenreDTO> genres;
     private List<ReviewDTO> reviews;
@@ -15,9 +17,11 @@ public class MovieDTO {
     public MovieDTO() {
     }
 
-    public MovieDTO(Long id, String name, int year, List<GenreDTO> genres, List<ReviewDTO> reviews) {
+    public MovieDTO(Long id, String name, String description, int duration, int year, List<GenreDTO> genres, List<ReviewDTO> reviews) {
         this.id = id;
         this.name = name;
+        this.description = description;
+        this.duration = duration;
         this.year = year;
         this.genres = genres;
         this.reviews = reviews;
@@ -37,6 +41,22 @@ public class MovieDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public int getYear() {
