@@ -36,15 +36,12 @@ public class MovieService {
         movie.setName(movieDetails.getName());
         movie.setGenres(movieDetails.getGenres());
         movie.setYear(movieDetails.getYear());
+        movie.setReviews(movieDetails.getReviews());
         return movieRepository.save(movie);
     }
 
     public void deleteMovie(Long id) {
         movieRepository.deleteById(id);
-    }
-
-    public List<Movie> getMoviesByGenre(Long genreId) {
-        return movieRepository.findByGenresId(genreId);
     }
 
     public Genre createGenre(Genre genre) {

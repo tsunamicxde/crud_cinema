@@ -1,57 +1,45 @@
 package com.tsunamicxde.crud_cinema.service;
 
-import com.tsunamicxde.crud_cinema.model.Movie;
 import com.tsunamicxde.crud_cinema.model.Genre;
-import com.tsunamicxde.crud_cinema.repository.MovieRepository;
+import com.tsunamicxde.crud_cinema.model.Review;
 import com.tsunamicxde.crud_cinema.repository.GenreRepository;
+import com.tsunamicxde.crud_cinema.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class GenreService {
-
-    @Autowired
-    private MovieRepository movieRepository;
-
     @Autowired
     private GenreRepository genreRepository;
 
-    public List<Movie> getAllMovies() {
-        return movieRepository.findAll();
+    public List<Genre> getAllGenres() {
+        return genreRepository.findAll();
     }
 
-    public Optional<Movie> getMovieById(Long id) {
-        return movieRepository.findById(id);
+    public Optional<Genre> getGenreById(Long id) {
+        return genreRepository.findById(id);
     }
 
-    public Movie createMovie(Movie movie) {
-        return movieRepository.save(movie);
-    }
-
-    public Movie updateMovie(Long id, Movie movieDetails) {
-        Movie movie = movieRepository.findById(id).orElseThrow(() -> new RuntimeException("Movie not found"));
-        movie.setName(movieDetails.getName());
-        movie.setGenres(movieDetails.getGenres());
-        movie.setYear(movieDetails.getYear());
-        return movieRepository.save(movie);
-    }
-
-    public void deleteMovie(Long id) {
-        movieRepository.deleteById(id);
-    }
-
-    public List<Movie> getMoviesByGenre(Long genreId) {
-        return movieRepository.findByGenresId(genreId);
+    public Optional<Genre> getGenreByName(String name) {
+        return genreRepository.findByName(name);
     }
 
     public Genre createGenre(Genre genre) {
         return genreRepository.save(genre);
     }
 
-    public List<Genre> getAllGenres() {
-        return genreRepository.findAll();
+    public Genre updateGenre(Long id, Genre genreDetails) {
+        Genre genre = genreRepository.findById(id).orElseThrow(() -> new RuntimeException("Genre not found"));
+        genre.setName(genreDetails.getName());
+        genre.setMovies(genreDetails.getMovies());
+        return genreRepository.save(genre);
+    }
+
+    public void deleteGenre(Long id) {
+        genreRepository.deleteById(id);
     }
 }

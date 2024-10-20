@@ -1,7 +1,6 @@
 package com.tsunamicxde.crud_cinema.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,9 +28,18 @@ public class Movie {
     @Column(nullable = false)
     private int year;
 
-    // Конструкторы, геттеры и сеттеры
+    @OneToMany(mappedBy = "movie")
+    @JsonIgnoreProperties("movie")
+    private Set<Review> reviews = new HashSet<>();
+
+    @Transient
+    private double averageRating;
 
     public Movie() {
+    }
+
+    public Movie(Long id) {
+        this.id = id;
     }
 
     public Movie(String name, int year) {
@@ -49,6 +57,21 @@ public class Movie {
 
     public String getName() {
         return name;
+    }
+
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
+    public double getAverageRating() {
+        return reviews.stream()
+                .mapToDouble(Review::getRating)
+                .average()
+                .orElse(0.0);
+    }
+
+    public void setReviews(Set<Review> reviews) {
+        this.reviews = reviews;
     }
 
     public void setName(String name) {
