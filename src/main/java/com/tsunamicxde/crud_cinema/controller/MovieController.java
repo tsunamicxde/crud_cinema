@@ -1,13 +1,12 @@
 package com.tsunamicxde.crud_cinema.controller;
 
+import com.tsunamicxde.crud_cinema.dto.DirectorDTO;
 import com.tsunamicxde.crud_cinema.dto.GenreDTO;
 import com.tsunamicxde.crud_cinema.dto.MovieDTO;
 import com.tsunamicxde.crud_cinema.dto.ReviewDTO;
-import com.tsunamicxde.crud_cinema.model.Genre;
-import com.tsunamicxde.crud_cinema.model.Movie;
-import com.tsunamicxde.crud_cinema.model.Review;
-import com.tsunamicxde.crud_cinema.model.Reviewer;
+import com.tsunamicxde.crud_cinema.model.*;
 import com.tsunamicxde.crud_cinema.response.ErrorResponse;
+import com.tsunamicxde.crud_cinema.service.DirectorService;
 import com.tsunamicxde.crud_cinema.service.GenreService;
 import com.tsunamicxde.crud_cinema.service.MovieService;
 import com.tsunamicxde.crud_cinema.service.ReviewerService;
@@ -17,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -34,6 +34,9 @@ public class MovieController {
 
     @Autowired
     private ReviewerService reviewerService;
+
+    @Autowired
+    private DirectorService directorService;
 
     @GetMapping
     public List<MovieDTO> getAllMovies() {
@@ -96,6 +99,21 @@ public class MovieController {
         movieDTO.setDuration(movie.getDuration());
         movieDTO.setYear(movie.getYear());
 
+        Director director = movie.getDirector();
+        DirectorDTO directorDTO = new DirectorDTO();
+
+        directorDTO.setId(director.getId());
+        directorDTO.setName(director.getName());
+        directorDTO.setSurname(director.getSurname());
+        directorDTO.setBirthDate(director.getBirthDate());
+        directorDTO.setBirthPlace(director.getBirthPlace());
+        List<Long> directorMovieIds = director.getMovies().stream()
+                .map(Movie::getId)
+                .collect(Collectors.toList());
+        directorDTO.setMovieIds(directorMovieIds);
+
+        movieDTO.setDirector(directorDTO);
+
         List<GenreDTO> genreDTOs = movie.getGenres().stream()
                 .map(genre -> {
                     GenreDTO genreDTO = new GenreDTO();
@@ -146,6 +164,10 @@ public class MovieController {
         movie.setDescription(movieDTO.getDescription());
         movie.setDuration(movieDTO.getDuration());
         movie.setYear(movieDTO.getYear());
+        Optional<Director> directorById = directorService.getDirectorById(movieDTO.getDirector().getId());
+        Director director = directorById.orElseThrow(() -> new RuntimeException("Director not found"));
+        movie.setDirector(director);
+
 
         if (movieDTO.getGenres() != null) {
             Set<Genre> genres = movieDTO.getGenres().stream()

@@ -37,6 +37,7 @@ public class MovieService {
         movie.setDuration(movieDetails.getDuration());
         movie.setGenres(movieDetails.getGenres());
         movie.setYear(movieDetails.getYear());
+        movie.setDirector(movieDetails.getDirector());
         movie.setReviews(movieDetails.getReviews());
         return movieRepository.save(movie);
     }
