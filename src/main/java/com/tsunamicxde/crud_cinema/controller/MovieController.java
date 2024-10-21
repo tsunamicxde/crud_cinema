@@ -1,22 +1,15 @@
 package com.tsunamicxde.crud_cinema.controller;
 
-import com.tsunamicxde.crud_cinema.dto.DirectorDTO;
-import com.tsunamicxde.crud_cinema.dto.GenreDTO;
-import com.tsunamicxde.crud_cinema.dto.MovieDTO;
-import com.tsunamicxde.crud_cinema.dto.ReviewDTO;
+import com.tsunamicxde.crud_cinema.dto.*;
 import com.tsunamicxde.crud_cinema.model.*;
 import com.tsunamicxde.crud_cinema.response.ErrorResponse;
-import com.tsunamicxde.crud_cinema.service.DirectorService;
-import com.tsunamicxde.crud_cinema.service.GenreService;
-import com.tsunamicxde.crud_cinema.service.MovieService;
-import com.tsunamicxde.crud_cinema.service.ReviewerService;
+import com.tsunamicxde.crud_cinema.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -37,6 +30,9 @@ public class MovieController {
 
     @Autowired
     private DirectorService directorService;
+
+    @Autowired
+    private ActorService actorService;
 
     @GetMapping
     public List<MovieDTO> getAllMovies() {
@@ -142,7 +138,6 @@ public class MovieController {
                     if (reviewer != null) {
                         reviewDTO.setReviewerName(reviewer.getName());
                         reviewDTO.setReviewerSurname(reviewer.getSurname());
-                        reviewDTO.setReviewerInfo(reviewer.getInfo());
                     }
 
                     reviewDTO.setMovieId(movie.getId());
@@ -150,6 +145,25 @@ public class MovieController {
                 })
                 .collect(Collectors.toList());
         movieDTO.setReviews(reviewDTOs);
+
+        List<ActorDTO> actorDTOs = movie.getActors().stream()
+                .map(actor -> {
+                    ActorDTO actorDTO = new ActorDTO();
+                    actorDTO.setId(actor.getId());
+                    actorDTO.setName(actor.getName());
+                    actorDTO.setSurname(actor.getSurname());
+                    actorDTO.setBirthDate(actor.getBirthDate());
+                    actorDTO.setBirthPlace(actor.getBirthPlace());
+
+                    List<Long> movieIds = actor.getMovies().stream()
+                            .map(Movie::getId)
+                            .collect(Collectors.toList());
+                    actorDTO.setMovieIds(movieIds);
+
+                    return actorDTO;
+                })
+                .collect(Collectors.toList());
+        movieDTO.setActors(actorDTOs);
 
         double averageRating = movie.getAverageRating();
         movieDTO.setAverageRating(averageRating);
@@ -194,6 +208,14 @@ public class MovieController {
                     .filter(review -> review.getReviewer() != null)
                     .collect(Collectors.toSet());
             movie.setReviews(reviews);
+        }
+
+        if (movieDTO.getActors() != null) {
+            Set<Actor> actors = movieDTO.getActors().stream()
+                    .map(actorDTO -> actorService.getActorById(actorDTO.getId()).orElse(null))
+                    .filter(actor -> actor != null)
+                    .collect(Collectors.toSet());
+            movie.setActors(actors);
         }
         return movie;
     }

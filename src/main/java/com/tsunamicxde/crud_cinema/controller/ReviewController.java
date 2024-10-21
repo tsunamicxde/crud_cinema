@@ -85,11 +85,9 @@ public class ReviewController {
         if (reviewer != null) {
             reviewDTO.setReviewerName(reviewer.getName());
             reviewDTO.setReviewerSurname(reviewer.getSurname());
-            reviewDTO.setReviewerInfo(reviewer.getInfo());
         } else {
             reviewDTO.setReviewerName(null);
             reviewDTO.setReviewerSurname(null);
-            reviewDTO.setReviewerInfo(null);
         }
 
         reviewDTO.setMovieId(review.getMovie().getId());

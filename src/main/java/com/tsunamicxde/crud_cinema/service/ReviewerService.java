@@ -34,7 +34,6 @@ public class ReviewerService {
         Reviewer reviewer = reviewerRepository.findById(id).orElseThrow(() -> new RuntimeException("Reviewer not found"));
         reviewer.setName(reviewerDetails.getName());
         reviewer.setSurname(reviewerDetails.getSurname());
-        reviewer.setInfo(reviewerDetails.getInfo());
         reviewer.setReviews(reviewerDetails.getReviews());
         return reviewerRepository.save(reviewer);
     }

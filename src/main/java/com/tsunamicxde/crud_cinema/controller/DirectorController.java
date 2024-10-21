@@ -56,8 +56,8 @@ public class DirectorController {
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateDirector(@PathVariable Long id, @RequestBody Director directorDetails) {
         try {
-            Director updatedReview = directorService.updateDirector(id, directorDetails);
-            return ResponseEntity.ok(updatedReview);
+            Director updatedDirector = directorService.updateDirector(id, directorDetails);
+            return ResponseEntity.ok(updatedDirector);
         } catch (DataIntegrityViolationException e) {
             ErrorResponse errorResponse = new ErrorResponse("Data integrity violation - " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);

@@ -1,9 +1,6 @@
 package com.tsunamicxde.crud_cinema.dto;
 
-import com.tsunamicxde.crud_cinema.model.Director;
-
 import java.util.List;
-import java.util.Set;
 
 public class MovieDTO {
     private Long id;
@@ -14,13 +11,14 @@ public class MovieDTO {
     private DirectorDTO director;
     private List<GenreDTO> genres;
     private List<ReviewDTO> reviews;
+    private List<ActorDTO> actors;
     private double averageRating;
 
 
     public MovieDTO() {
     }
 
-    public MovieDTO(Long id, String name, String description, int duration, int year, DirectorDTO director,  List<GenreDTO> genres, List<ReviewDTO> reviews) {
+    public MovieDTO(Long id, String name, String description, int duration, int year, DirectorDTO director,  List<GenreDTO> genres, List<ReviewDTO> reviews, List<ActorDTO> actors) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -29,6 +27,7 @@ public class MovieDTO {
         this.director = director;
         this.genres = genres;
         this.reviews = reviews;
+        this.actors = actors;
     }
 
     public Long getId() {
@@ -101,5 +100,13 @@ public class MovieDTO {
 
     public void setDirector(DirectorDTO director) {
         this.director = director;
+    }
+
+    public List<ActorDTO> getActors() {
+        return actors;
+    }
+
+    public void setActors(List<ActorDTO> actors) {
+        this.actors = actors;
     }
 }

@@ -6,7 +6,6 @@ public class ReviewDTO {
     private Double rating;
     private String reviewerName;
     private String reviewerSurname;
-    private String reviewerInfo;
     private Long movieId;
 
     public ReviewDTO() {
@@ -20,13 +19,12 @@ public class ReviewDTO {
         this.movieId = movieId;
     }
 
-    public ReviewDTO(Long id, String message, Double rating, String reviewerName, String reviewerSurname, String reviewerInfo, Long movieId) {
+    public ReviewDTO(Long id, String message, Double rating, String reviewerName, String reviewerSurname, Long movieId) {
         this.id = id;
         this.message = message;
         this.rating = rating;
         this.reviewerName = reviewerName;
         this.reviewerSurname = reviewerSurname;
-        this.reviewerInfo = reviewerInfo;
         this.movieId = movieId;
     }
 
@@ -68,13 +66,5 @@ public class ReviewDTO {
 
     public void setReviewerSurname(String reviewerSurname) {
         this.reviewerSurname = reviewerSurname;
-    }
-
-    public String getReviewerInfo() {
-        return reviewerInfo;
-    }
-
-    public void setReviewerInfo(String reviewerInfo) {
-        this.reviewerInfo = reviewerInfo;
     }
 }

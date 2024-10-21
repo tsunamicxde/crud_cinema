@@ -1,11 +1,7 @@
 package com.tsunamicxde.crud_cinema.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.tsunamicxde.crud_cinema.serializer.MovieIdSerializer;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -30,12 +26,10 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "reviewer_id", nullable = false)
-    @JsonIgnoreProperties("reviews")
     private Reviewer reviewer;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "movie_id", nullable = false)
-    @JsonSerialize(using = MovieIdSerializer.class)
     private Movie movie;
 
     public Review() {
