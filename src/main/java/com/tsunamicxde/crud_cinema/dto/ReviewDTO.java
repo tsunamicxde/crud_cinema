@@ -1,30 +1,22 @@
 package com.tsunamicxde.crud_cinema.dto;
 
+import java.util.List;
+
 public class ReviewDTO {
     private Long id;
     private String message;
     private Double rating;
-    private String reviewerName;
-    private String reviewerSurname;
+    private ReviewerDTO reviewer;
     private Long movieId;
 
     public ReviewDTO() {
     }
 
-    public Long getMovieId() {
-        return movieId;
-    }
-
-    public void setMovieId(Long movieId) {
-        this.movieId = movieId;
-    }
-
-    public ReviewDTO(Long id, String message, Double rating, String reviewerName, String reviewerSurname, Long movieId) {
+    public ReviewDTO(Long id, String message, Double rating, ReviewerDTO reviewer, Long movieId) {
         this.id = id;
         this.message = message;
         this.rating = rating;
-        this.reviewerName = reviewerName;
-        this.reviewerSurname = reviewerSurname;
+        this.reviewer = reviewer;
         this.movieId = movieId;
     }
 
@@ -52,19 +44,19 @@ public class ReviewDTO {
         this.rating = rating;
     }
 
-    public String getReviewerName() {
-        return reviewerName;
+    public ReviewerDTO getReviewer() {
+        return reviewer;
     }
 
-    public void setReviewerName(String reviewerName) {
-        this.reviewerName = reviewerName;
+    public void setReviewer(ReviewerDTO reviewer) {
+        this.reviewer = reviewer;
     }
 
-    public String getReviewerSurname() {
-        return reviewerSurname;
+    public Long getMovieId() {
+        return movieId;
     }
 
-    public void setReviewerSurname(String reviewerSurname) {
-        this.reviewerSurname = reviewerSurname;
+    public void setMovieId(Long movieId) {
+        this.movieId = movieId;
     }
 }

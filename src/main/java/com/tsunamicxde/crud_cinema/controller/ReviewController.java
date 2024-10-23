@@ -1,10 +1,14 @@
 package com.tsunamicxde.crud_cinema.controller;
 
+import com.tsunamicxde.crud_cinema.dto.MovieDTO;
 import com.tsunamicxde.crud_cinema.dto.ReviewDTO;
+import com.tsunamicxde.crud_cinema.dto.ReviewerDTO;
+import com.tsunamicxde.crud_cinema.model.entities.Director;
 import com.tsunamicxde.crud_cinema.model.entities.Movie;
 import com.tsunamicxde.crud_cinema.model.entities.Review;
 import com.tsunamicxde.crud_cinema.model.entities.Reviewer;
 import com.tsunamicxde.crud_cinema.response.ErrorResponse;
+import com.tsunamicxde.crud_cinema.service.MovieService;
 import com.tsunamicxde.crud_cinema.service.ReviewService;
 import com.tsunamicxde.crud_cinema.service.ReviewerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +19,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/reviews")
 public class ReviewController {
+    @Autowired
+    private MovieService movieService;
 
     @Autowired
     private ReviewService reviewService;
@@ -27,21 +34,25 @@ public class ReviewController {
     private ReviewerService reviewerService;
 
     @GetMapping
-    public List<Review> getAllReviews() {
-        return reviewService.getAllReviews();
+    public List<ReviewDTO> getAllReviews() {
+        return reviewService.getAllReviews().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Review> getReviewById(@PathVariable Long id) {
+    public ResponseEntity<ReviewDTO> getReviewById(@PathVariable Long id) {
         Optional<Review> review = reviewService.getReviewById(id);
-        return review.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return review.map(this::convertToDTO)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Object> createReview(@RequestBody Review review) {
+    public ResponseEntity<Object> createReview(@RequestBody ReviewDTO reviewDTO) {
         try {
-            Review createdReview = reviewService.createReview(review);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdReview);
+            Review createdReview = reviewService.createReview(convertToEntity(reviewDTO));
+            return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(createdReview));
         } catch (DataIntegrityViolationException e) {
             ErrorResponse errorResponse = new ErrorResponse("Data integrity violation - " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
@@ -53,15 +64,15 @@ public class ReviewController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateReview(@PathVariable Long id, @RequestBody Review reviewDetails) {
+    public ResponseEntity<Object> updateReview(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO) {
         try {
-            Review updatedReview = reviewService.updateReview(id, reviewDetails);
-            return ResponseEntity.ok(updatedReview);
+            Review updatedReview = reviewService.updateReview(id, convertToEntity(reviewDTO));
+            return ResponseEntity.ok(convertToDTO(updatedReview));
         } catch (DataIntegrityViolationException e) {
             ErrorResponse errorResponse = new ErrorResponse("Data integrity violation - " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("Review not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("Movie or genre not found"));
         } catch (Exception e) {
             e.printStackTrace();
             ErrorResponse errorResponse = new ErrorResponse("Error: " + e.getMessage());
@@ -83,11 +94,17 @@ public class ReviewController {
 
         Reviewer reviewer = review.getReviewer();
         if (reviewer != null) {
-            reviewDTO.setReviewerName(reviewer.getName());
-            reviewDTO.setReviewerSurname(reviewer.getSurname());
+            ReviewerDTO reviewerDTO = new ReviewerDTO();
+            reviewerDTO.setId(reviewDTO.getId());
+            reviewerDTO.setName(reviewer.getName());
+            reviewerDTO.setSurname(reviewer.getSurname());
+            List<Long> reviewIds = reviewer.getReviews().stream()
+                    .map(Review::getId)
+                    .collect(Collectors.toList());
+            reviewerDTO.setReviewIds(reviewIds);
+            reviewDTO.setReviewer(reviewerDTO);
         } else {
-            reviewDTO.setReviewerName(null);
-            reviewDTO.setReviewerSurname(null);
+            reviewDTO.setReviewer(null);
         }
 
         reviewDTO.setMovieId(review.getMovie().getId());
@@ -100,8 +117,13 @@ public class ReviewController {
         review.setMessage(reviewDTO.getMessage());
         review.setRating(reviewDTO.getRating());
 
-        review.setMovie(new Movie(reviewDTO.getMovieId()));
-        review.setReviewer(reviewerService.getReviewerByName(reviewDTO.getReviewerName()).orElse(null));
+        Optional<Reviewer> reviewerById = reviewerService.getReviewerById(reviewDTO.getReviewer().getId());
+        Reviewer reviewer = reviewerById.orElseThrow(() -> new RuntimeException("Reviewer not found"));
+        review.setReviewer(reviewer);
+
+        Optional<Movie> movieById = movieService.getMovieById(reviewDTO.getMovieId());
+        Movie movie = movieById.orElseThrow(() -> new RuntimeException("Movie not found"));
+        review.setMovie(movie);
         return review;
     }
 }

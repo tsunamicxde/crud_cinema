@@ -5,6 +5,7 @@ import com.tsunamicxde.crud_cinema.model.entities.Genre;
 import com.tsunamicxde.crud_cinema.model.entities.Movie;
 import com.tsunamicxde.crud_cinema.response.ErrorResponse;
 import com.tsunamicxde.crud_cinema.service.GenreService;
+import com.tsunamicxde.crud_cinema.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/genres")
 public class GenreController {
 
+    @Autowired
+    private MovieService movieService;
     @Autowired
     private GenreService genreService;
 

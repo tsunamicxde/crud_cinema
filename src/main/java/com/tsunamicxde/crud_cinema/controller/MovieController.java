@@ -136,10 +136,16 @@ public class MovieController {
 
                     Reviewer reviewer = review.getReviewer();
                     if (reviewer != null) {
-                        reviewDTO.setReviewerName(reviewer.getName());
-                        reviewDTO.setReviewerSurname(reviewer.getSurname());
+                        ReviewerDTO reviewerDTO = new ReviewerDTO();
+                        reviewerDTO.setId(reviewer.getId());
+                        reviewerDTO.setName(reviewer.getName());
+                        reviewerDTO.setSurname(reviewer.getSurname());
+                        List<Long> reviewIds = reviewer.getReviews().stream()
+                                .map(Review::getId)
+                                .collect(Collectors.toList());
+                        reviewerDTO.setReviewIds(reviewIds);
+                        reviewDTO.setReviewer(reviewerDTO);
                     }
-
                     reviewDTO.setMovieId(movie.getId());
                     return reviewDTO;
                 })
@@ -199,7 +205,7 @@ public class MovieController {
                         review.setMessage(reviewDTO.getMessage());
                         review.setRating(reviewDTO.getRating());
 
-                        Reviewer reviewer = reviewerService.getReviewerByName(reviewDTO.getReviewerName()).orElse(null);
+                        Reviewer reviewer = reviewerService.getReviewerById(reviewDTO.getReviewer().getId()).orElse(null);
                         review.setReviewer(reviewer);
                         review.setMovie(movie);
 
