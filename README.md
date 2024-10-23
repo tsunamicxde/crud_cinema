@@ -35,7 +35,7 @@ Clone this repository to your local computer:
 https://github.com/tsunamicxde/crud_cinema.git
 ```
 
-## Настройка базы данных
+## Database Setup
 
 Configure the database connection parameters in the **application.properties** file:
 
@@ -106,7 +106,7 @@ POST /api/movies
 PUT /api/movies/{id}
 ```
 
-#### Тело запроса
+#### Request Body
 
 ```json
 {
