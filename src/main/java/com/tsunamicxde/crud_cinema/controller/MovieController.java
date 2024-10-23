@@ -1,7 +1,7 @@
 package com.tsunamicxde.crud_cinema.controller;
 
 import com.tsunamicxde.crud_cinema.dto.*;
-import com.tsunamicxde.crud_cinema.model.*;
+import com.tsunamicxde.crud_cinema.model.entities.*;
 import com.tsunamicxde.crud_cinema.response.ErrorResponse;
 import com.tsunamicxde.crud_cinema.service.*;
 import org.springframework.beans.factory.annotation.Autowired;

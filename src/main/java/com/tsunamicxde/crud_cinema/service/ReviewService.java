@@ -1,6 +1,6 @@
 package com.tsunamicxde.crud_cinema.service;
 
-import com.tsunamicxde.crud_cinema.model.Review;
+import com.tsunamicxde.crud_cinema.model.entities.Review;
 import com.tsunamicxde.crud_cinema.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

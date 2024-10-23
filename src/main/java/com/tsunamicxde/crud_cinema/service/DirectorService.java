@@ -1,6 +1,6 @@
 package com.tsunamicxde.crud_cinema.service;
 
-import com.tsunamicxde.crud_cinema.model.Director;
+import com.tsunamicxde.crud_cinema.model.entities.Director;
 import com.tsunamicxde.crud_cinema.repository.DirectorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

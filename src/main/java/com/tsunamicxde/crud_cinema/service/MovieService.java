@@ -1,6 +1,6 @@
 package com.tsunamicxde.crud_cinema.service;
 
-import com.tsunamicxde.crud_cinema.model.Movie;
+import com.tsunamicxde.crud_cinema.model.entities.Movie;
 import com.tsunamicxde.crud_cinema.repository.MovieRepository;
 import com.tsunamicxde.crud_cinema.repository.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,9 +1,9 @@
 package com.tsunamicxde.crud_cinema.controller;
 
 import com.tsunamicxde.crud_cinema.dto.ReviewDTO;
-import com.tsunamicxde.crud_cinema.model.Movie;
-import com.tsunamicxde.crud_cinema.model.Review;
-import com.tsunamicxde.crud_cinema.model.Reviewer;
+import com.tsunamicxde.crud_cinema.model.entities.Movie;
+import com.tsunamicxde.crud_cinema.model.entities.Review;
+import com.tsunamicxde.crud_cinema.model.entities.Reviewer;
 import com.tsunamicxde.crud_cinema.response.ErrorResponse;
 import com.tsunamicxde.crud_cinema.service.ReviewService;
 import com.tsunamicxde.crud_cinema.service.ReviewerService;

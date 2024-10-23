@@ -1,8 +1,8 @@
 package com.tsunamicxde.crud_cinema.controller;
 
 import com.tsunamicxde.crud_cinema.dto.GenreDTO;
-import com.tsunamicxde.crud_cinema.model.Genre;
-import com.tsunamicxde.crud_cinema.model.Movie;
+import com.tsunamicxde.crud_cinema.model.entities.Genre;
+import com.tsunamicxde.crud_cinema.model.entities.Movie;
 import com.tsunamicxde.crud_cinema.response.ErrorResponse;
 import com.tsunamicxde.crud_cinema.service.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;

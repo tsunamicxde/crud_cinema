@@ -1,10 +1,8 @@
 package com.tsunamicxde.crud_cinema.controller;
 
 import com.tsunamicxde.crud_cinema.dto.ActorDTO;
-import com.tsunamicxde.crud_cinema.dto.GenreDTO;
-import com.tsunamicxde.crud_cinema.model.Actor;
-import com.tsunamicxde.crud_cinema.model.Genre;
-import com.tsunamicxde.crud_cinema.model.Movie;
+import com.tsunamicxde.crud_cinema.model.entities.Actor;
+import com.tsunamicxde.crud_cinema.model.entities.Movie;
 import com.tsunamicxde.crud_cinema.response.ErrorResponse;
 import com.tsunamicxde.crud_cinema.service.ActorService;
 import com.tsunamicxde.crud_cinema.service.MovieService;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController

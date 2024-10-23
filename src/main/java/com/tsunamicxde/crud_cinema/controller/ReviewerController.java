@@ -1,6 +1,6 @@
 package com.tsunamicxde.crud_cinema.controller;
 
-import com.tsunamicxde.crud_cinema.model.Reviewer;
+import com.tsunamicxde.crud_cinema.model.entities.Reviewer;
 import com.tsunamicxde.crud_cinema.response.ErrorResponse;
 import com.tsunamicxde.crud_cinema.service.ReviewerService;
 import org.springframework.beans.factory.annotation.Autowired;

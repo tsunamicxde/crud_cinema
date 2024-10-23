@@ -1,6 +1,7 @@
-package com.tsunamicxde.crud_cinema.model;
+package com.tsunamicxde.crud_cinema.model.entities;
 
 import com.fasterxml.jackson.annotation.*;
+import com.tsunamicxde.crud_cinema.model.base.BaseEntity;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,11 +9,7 @@ import java.util.Set;
 @Entity
 @Table(name = "movies")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Movie {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Movie extends BaseEntity {
 
     @Column(nullable = false)
     private String name;
@@ -56,7 +53,7 @@ public class Movie {
     }
 
     public Movie(Long id) {
-        this.id = id;
+        this.setId(id);
     }
 
     public Movie(String name, String description, int duration, int year) {
@@ -64,14 +61,6 @@ public class Movie {
         this.description = description;
         this.duration = duration;
         this.year = year;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

@@ -1,7 +1,8 @@
-package com.tsunamicxde.crud_cinema.model;
+package com.tsunamicxde.crud_cinema.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.tsunamicxde.crud_cinema.model.base.BaseEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -9,11 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "reviews")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Review {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Review extends BaseEntity {
 
     @Column(nullable = false)
     private String message;
@@ -40,14 +37,6 @@ public class Review {
         this.rating = rating;
         this.reviewer = reviewer;
         this.movie = movie;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getMessage() {

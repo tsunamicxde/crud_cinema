@@ -1,10 +1,8 @@
 package com.tsunamicxde.crud_cinema.repository;
 
-import com.tsunamicxde.crud_cinema.model.Movie;
+import com.tsunamicxde.crud_cinema.model.entities.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, Long> {

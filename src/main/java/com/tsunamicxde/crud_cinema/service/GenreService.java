@@ -1,11 +1,10 @@
 package com.tsunamicxde.crud_cinema.service;
 
-import com.tsunamicxde.crud_cinema.model.Genre;
+import com.tsunamicxde.crud_cinema.model.entities.Genre;
 import com.tsunamicxde.crud_cinema.repository.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 

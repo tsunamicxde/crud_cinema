@@ -1,8 +1,8 @@
 package com.tsunamicxde.crud_cinema.controller;
 
 import com.tsunamicxde.crud_cinema.dto.DirectorDTO;
-import com.tsunamicxde.crud_cinema.model.Director;
-import com.tsunamicxde.crud_cinema.model.Movie;
+import com.tsunamicxde.crud_cinema.model.entities.Director;
+import com.tsunamicxde.crud_cinema.model.entities.Movie;
 import com.tsunamicxde.crud_cinema.response.ErrorResponse;
 import com.tsunamicxde.crud_cinema.service.DirectorService;
 import com.tsunamicxde.crud_cinema.service.MovieService;
