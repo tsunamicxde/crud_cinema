@@ -1,9 +1,18 @@
 # CRUD REST API for Online Cinema
 
-![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.4-green?style=for-the-badge&logo=springboot)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12.5-blue?style=for-the-badge&logo=postgresql)
-![Hibernate](https://img.shields.io/badge/Hibernate-5.6.9-red?style=for-the-badge)
+<div align="left">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" height="40" alt="java logo"  />
+  <img width="12" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" height="40" alt="spring logo"  />
+  <img width="12" />
+  <img src="https://skillicons.dev/icons?i=hibernate" height="40" alt="hibernate logo"  />
+  <img width="12" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" height="40" alt="postgresql logo"  />
+  <img width="12" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" height="40" alt="docker logo"  />
+</div>
+
+###
 
 This project is a CRUD REST API for managing content in an online cinema, developed using Spring Boot. The API supports create, read, update, and delete operations for various entities: movies, reviews, critics, directors, actors, and genres.
 
@@ -46,6 +55,67 @@ spring.datasource.username=your_username
 spring.datasource.password=your_db_password
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+```
+
+## Docker Setup
+
+### Build and Run with Docker
+
+To build and run the application using Docker, follow these steps:
+
+1. Create a Dockerfile in the root of your project:
+
+```dockerfile
+FROM openjdk:21-jdk-slim
+
+WORKDIR /app
+
+COPY target/crud_cinema-0.0.1-SNAPSHOT.jar app.jar
+
+ENV SPRING_APPLICATION_NAME=crud_cinema
+ENV SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/your_db_name
+ENV SPRING_DATASOURCE_USERNAME=your_username
+ENV SPRING_DATASOURCE_PASSWORD=your_db_password
+ENV SPRING_JPA_HIBERNATE_DDL_AUTO=update
+ENV SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+2. Create a docker-compose.yml file in the root of your project:
+
+```yml
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: your_db_name
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_db_password
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_NAME: crud_cinema
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/your_db_name
+      SPRING_DATASOURCE_USERNAME: your_username
+      SPRING_DATASOURCE_PASSWORD: your_db_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+```
+
+3. Build and run the application with Docker Compose
+
+Make sure you are in the root directory of your project and run:
+
+```bash
+docker-compose up --build
 ```
 
 ## Running the Application
