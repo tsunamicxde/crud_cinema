@@ -1,7 +1,8 @@
 package com.tsunamicxde.crud_cinema.service;
 
-import com.tsunamicxde.crud_cinema.model.Movie;
+import com.tsunamicxde.crud_cinema.model.entities.Movie;
 import com.tsunamicxde.crud_cinema.repository.MovieRepository;
+import com.tsunamicxde.crud_cinema.repository.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,9 @@ public class MovieService {
 
     @Autowired
     private MovieRepository movieRepository;
+
+    @Autowired
+    private GenreRepository genreRepository;
 
     public List<Movie> getAllMovies() {
         return movieRepository.findAll();
@@ -29,8 +33,12 @@ public class MovieService {
     public Movie updateMovie(Long id, Movie movieDetails) {
         Movie movie = movieRepository.findById(id).orElseThrow(() -> new RuntimeException("Movie not found"));
         movie.setName(movieDetails.getName());
-        movie.setGenre(movieDetails.getGenre());
+        movie.setDescription(movieDetails.getDescription());
+        movie.setDuration(movieDetails.getDuration());
+        movie.setGenres(movieDetails.getGenres());
         movie.setYear(movieDetails.getYear());
+        movie.setDirector(movieDetails.getDirector());
+        movie.setReviews(movieDetails.getReviews());
         return movieRepository.save(movie);
     }
 

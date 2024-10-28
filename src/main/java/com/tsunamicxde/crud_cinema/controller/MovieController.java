@@ -1,13 +1,19 @@
 package com.tsunamicxde.crud_cinema.controller;
 
-import com.tsunamicxde.crud_cinema.model.Movie;
-import com.tsunamicxde.crud_cinema.service.MovieService;
+import com.tsunamicxde.crud_cinema.dto.*;
+import com.tsunamicxde.crud_cinema.model.entities.*;
+import com.tsunamicxde.crud_cinema.response.ErrorResponse;
+import com.tsunamicxde.crud_cinema.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/movies")
@@ -16,31 +22,207 @@ public class MovieController {
     @Autowired
     private MovieService movieService;
 
+    @Autowired
+    private GenreService genreService;
+
+    @Autowired
+    private ReviewerService reviewerService;
+
+    @Autowired
+    private DirectorService directorService;
+
+    @Autowired
+    private ActorService actorService;
+
     @GetMapping
-    public List<Movie> getAllMovies() {
-        return movieService.getAllMovies();
+    public List<MovieDTO> getAllMovies() {
+        return movieService.getAllMovies().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Movie> getMovieById(@PathVariable Long id) {
+    public ResponseEntity<MovieDTO> getMovieById(@PathVariable Long id) {
         Optional<Movie> movie = movieService.getMovieById(id);
-        return movie.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return movie.map(this::convertToDTO)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Movie createMovie(@RequestBody Movie movie) {
-        return movieService.createMovie(movie);
+    public ResponseEntity<Object> createMovie(@RequestBody MovieDTO movieDTO) {
+        try {
+            Movie createdMovie = movieService.createMovie(convertToEntity(movieDTO));
+            return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(createdMovie));
+        } catch (DataIntegrityViolationException e) {
+            ErrorResponse errorResponse = new ErrorResponse("Data integrity violation - " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ErrorResponse errorResponse = new ErrorResponse("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @RequestBody Movie movieDetails) {
-        Movie updatedMovie = movieService.updateMovie(id, movieDetails);
-        return ResponseEntity.ok(updatedMovie);
+    public ResponseEntity<Object> updateMovie(@PathVariable Long id, @RequestBody MovieDTO movieDTO) {
+        try {
+            Movie updatedMovie = movieService.updateMovie(id, convertToEntity(movieDTO));
+            return ResponseEntity.ok(convertToDTO(updatedMovie));
+        } catch (DataIntegrityViolationException e) {
+            ErrorResponse errorResponse = new ErrorResponse("Data integrity violation - " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("Movie or genre not found"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            ErrorResponse errorResponse = new ErrorResponse("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMovie(@PathVariable Long id) {
         movieService.deleteMovie(id);
         return ResponseEntity.noContent().build();
+    }
+
+    protected MovieDTO convertToDTO(Movie movie) {
+        MovieDTO movieDTO = new MovieDTO();
+        movieDTO.setId(movie.getId());
+        movieDTO.setName(movie.getName());
+        movieDTO.setDescription(movie.getDescription());
+        movieDTO.setDuration(movie.getDuration());
+        movieDTO.setYear(movie.getYear());
+
+        Director director = movie.getDirector();
+        DirectorDTO directorDTO = new DirectorDTO();
+
+        directorDTO.setId(director.getId());
+        directorDTO.setName(director.getName());
+        directorDTO.setSurname(director.getSurname());
+        directorDTO.setBirthDate(director.getBirthDate());
+        directorDTO.setBirthPlace(director.getBirthPlace());
+        List<Long> directorMovieIds = director.getMovies().stream()
+                .map(Movie::getId)
+                .collect(Collectors.toList());
+        directorDTO.setMovieIds(directorMovieIds);
+
+        movieDTO.setDirector(directorDTO);
+
+        List<GenreDTO> genreDTOs = movie.getGenres().stream()
+                .map(genre -> {
+                    GenreDTO genreDTO = new GenreDTO();
+                    genreDTO.setId(genre.getId());
+                    genreDTO.setName(genre.getName());
+                    genreDTO.setDescription(genre.getDescription());
+
+                    List<Long> movieIds = genre.getMovies().stream()
+                            .map(Movie::getId)
+                            .collect(Collectors.toList());
+                    genreDTO.setMovieIds(movieIds);
+
+                    return genreDTO;
+                })
+                .collect(Collectors.toList());
+        movieDTO.setGenres(genreDTOs);
+
+        List<ReviewDTO> reviewDTOs = movie.getReviews().stream()
+                .map(review -> {
+                    ReviewDTO reviewDTO = new ReviewDTO();
+                    reviewDTO.setId(review.getId());
+                    reviewDTO.setMessage(review.getMessage());
+                    reviewDTO.setRating(review.getRating());
+
+                    Reviewer reviewer = review.getReviewer();
+                    if (reviewer != null) {
+                        ReviewerDTO reviewerDTO = new ReviewerDTO();
+                        reviewerDTO.setId(reviewer.getId());
+                        reviewerDTO.setName(reviewer.getName());
+                        reviewerDTO.setSurname(reviewer.getSurname());
+                        List<Long> reviewIds = reviewer.getReviews().stream()
+                                .map(Review::getId)
+                                .collect(Collectors.toList());
+                        reviewerDTO.setReviewIds(reviewIds);
+                        reviewDTO.setReviewer(reviewerDTO);
+                    }
+                    reviewDTO.setMovieId(movie.getId());
+                    return reviewDTO;
+                })
+                .collect(Collectors.toList());
+        movieDTO.setReviews(reviewDTOs);
+
+        List<ActorDTO> actorDTOs = movie.getActors().stream()
+                .map(actor -> {
+                    ActorDTO actorDTO = new ActorDTO();
+                    actorDTO.setId(actor.getId());
+                    actorDTO.setName(actor.getName());
+                    actorDTO.setSurname(actor.getSurname());
+                    actorDTO.setBirthDate(actor.getBirthDate());
+                    actorDTO.setBirthPlace(actor.getBirthPlace());
+
+                    List<Long> movieIds = actor.getMovies().stream()
+                            .map(Movie::getId)
+                            .collect(Collectors.toList());
+                    actorDTO.setMovieIds(movieIds);
+
+                    return actorDTO;
+                })
+                .collect(Collectors.toList());
+        movieDTO.setActors(actorDTOs);
+
+        double averageRating = movie.getAverageRating();
+        movieDTO.setAverageRating(averageRating);
+
+        return movieDTO;
+    }
+
+    private Movie convertToEntity(MovieDTO movieDTO) {
+        Movie movie = new Movie();
+        movie.setId(movieDTO.getId());
+        movie.setName(movieDTO.getName());
+        movie.setDescription(movieDTO.getDescription());
+        movie.setDuration(movieDTO.getDuration());
+        movie.setYear(movieDTO.getYear());
+        Optional<Director> directorById = directorService.getDirectorById(movieDTO.getDirector().getId());
+        Director director = directorById.orElseThrow(() -> new RuntimeException("Director not found"));
+        movie.setDirector(director);
+
+
+        if (movieDTO.getGenres() != null) {
+            Set<Genre> genres = movieDTO.getGenres().stream()
+                    .map(genreDTO -> genreService.getGenreById(genreDTO.getId()).orElse(null))
+                    .filter(genre -> genre != null)
+                    .collect(Collectors.toSet());
+            movie.setGenres(genres);
+        }
+
+        if (movieDTO.getReviews() != null) {
+            Set<Review> reviews = movieDTO.getReviews().stream()
+                    .map(reviewDTO -> {
+                        Review review = new Review();
+                        review.setId(reviewDTO.getId());
+                        review.setMessage(reviewDTO.getMessage());
+                        review.setRating(reviewDTO.getRating());
+
+                        Reviewer reviewer = reviewerService.getReviewerById(reviewDTO.getReviewer().getId()).orElse(null);
+                        review.setReviewer(reviewer);
+                        review.setMovie(movie);
+
+                        return review;
+                    })
+                    .filter(review -> review.getReviewer() != null)
+                    .collect(Collectors.toSet());
+            movie.setReviews(reviews);
+        }
+
+        if (movieDTO.getActors() != null) {
+            Set<Actor> actors = movieDTO.getActors().stream()
+                    .map(actorDTO -> actorService.getActorById(actorDTO.getId()).orElse(null))
+                    .filter(actor -> actor != null)
+                    .collect(Collectors.toSet());
+            movie.setActors(actors);
+        }
+        return movie;
     }
 }
